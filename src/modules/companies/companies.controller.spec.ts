@@ -65,4 +65,24 @@ describe('CompaniesController', () => {
       statusCode: 400,
     });
   });
+
+  it('should handle error when GET /companies/getinformation is called and return 500', async () => {
+    const findCompanyInformationSpy = jest.spyOn(
+      companyServiceMock,
+      'getJobInformation',
+    );
+    findCompanyInformationSpy.mockImplementation(() => {
+      throw new Error('Error in getJobInformation');
+    });
+
+    const response = await request(app.getHttpServer()).get(
+      '/companies/getinformation?url=' + encodedURL,
+    );
+
+    expect(response.status).toBe(500);
+    expect(response.body).toEqual({
+      message: 'Internal Server Error',
+      error: 'Error in getJobInformation',
+    });
+  });
 });

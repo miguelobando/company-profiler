@@ -1,4 +1,10 @@
-import { Controller, Get, HttpCode, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpCode,
+  InternalServerErrorException,
+  Query,
+} from '@nestjs/common';
 import { CompaniesService } from './companies.service';
 import { ParseUrlPipe } from './url-parser.pipe';
 
@@ -9,8 +15,15 @@ export class CompaniesController {
   @Get('/getinformation')
   @HttpCode(200)
   async getCompanyInformation(@Query('url', ParseUrlPipe) url: string) {
-    return {
-      success: this.companiesService.getJobInformation(url),
-    };
+    try {
+      return {
+        success: this.companiesService.getJobInformation(url),
+      };
+    } catch (error) {
+      throw new InternalServerErrorException({
+        message: 'Internal Server Error',
+        error: error.message,
+      });
+    }
   }
 }
