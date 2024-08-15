@@ -20,18 +20,12 @@ export class SqsService {
       : undefined;
 
     this.sqsClient = new SQSClient({
-      endpoint,
       region: this.configService.get<string>('AWS_REGION'),
-      credentials: {
-        accessKeyId: this.configService.get<string>('AWS_ACCESS_KEY_ID'),
-        secretAccessKey: this.configService.get<string>(
-          'AWS_SECRET_ACCESS_KEY',
-        ),
-      },
+      endpoint,
     });
 
     this.queueUrl = isDevelopment
-      ? this.configService.get<string>('SQS_LOCALSTACK_URL')
+      ? `${this.configService.get<string>('SQS_LOCALSTACK_URL')}`
       : this.configService.get<string>('SQS_REAL_URL');
   }
 
