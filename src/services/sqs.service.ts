@@ -2,13 +2,17 @@ import { Injectable } from '@nestjs/common';
 import { SQSClient, SendMessageCommand } from '@aws-sdk/client-sqs';
 import { ConfigService } from '@nestjs/config';
 import { SendUrlToScrapeDto } from './dto/sendUrlToScrape.dto';
+import { LogService } from './log.service';
 
 @Injectable()
 export class SqsService {
   private sqsClient: SQSClient;
   private queueUrl: string;
 
-  constructor(private configService: ConfigService) {
+  constructor(
+    private configService: ConfigService,
+    private readonly logService: LogService,
+  ) {
     const isDevelopment =
       this.configService.get<string>('NODE_ENV') === 'development';
     const endpoint = isDevelopment
@@ -40,6 +44,7 @@ export class SqsService {
     try {
       await this.sqsClient.send(command);
     } catch (error) {
+      this.logService.logError('SqsService', error.message);
       throw new Error('Error sending message to SQS');
     }
   }
