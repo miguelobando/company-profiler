@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { CompaniesService } from './companies.service';
 import { CompaniesController } from './companies.controller';
-import { SqsService } from 'src/services/sqs.service';
-import { LogService } from 'src/services/log.service';
+import { SqsService } from '../../services/sqs.service';
+import { LogService } from '../../services/log.service';
 
 @Module({
   controllers: [CompaniesController],
