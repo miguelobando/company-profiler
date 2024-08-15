@@ -16,8 +16,9 @@ export class CompaniesController {
   @HttpCode(200)
   async getCompanyInformation(@Query('url', ParseUrlPipe) url: string) {
     try {
+      const result = await this.companiesService.getJobInformation(url);
       return {
-        success: this.companiesService.getJobInformation(url),
+        success: result,
       };
     } catch (error) {
       throw new InternalServerErrorException({
