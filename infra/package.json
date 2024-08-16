@@ -1,0 +1,22 @@
+{
+  "name": "infra",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "serverless-deployment-bucket": "^1.6.0",
+    "serverless-step-functions": "^3.21.0"
+  },
+  "devDependencies": {
+    "aws-sdk": "^2.814.0",
+    "serverless": "^3.39.0",
+    "serverless-localstack": "^1.2.1",
+    "serverless-offline": "^14.0.0"
+  }
+}
