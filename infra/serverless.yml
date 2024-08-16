@@ -37,6 +37,14 @@ functions:
   lambdaTwo:
     handler: scrapping-services/lambdaOne.handler
     runtime: nodejs18.x
+  lambdaThree:
+    handler: dist/lambdas/companyValues.handler
+    runtime: nodejs18.x
+    events:
+      - http:
+          path: /company-values
+          method: get
+
 
 resources:
   Resources:

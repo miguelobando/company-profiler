@@ -4,19 +4,30 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest",
+    "deploy": "tsc && serverless deploy"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "jsdom": "^24.1.1",
     "serverless-deployment-bucket": "^1.6.0",
-    "serverless-step-functions": "^3.21.0"
+    "serverless-step-functions": "^3.21.0",
+    "vitest": "^2.0.5"
   },
   "devDependencies": {
+    "@types/rollup": "^0.54.0",
     "aws-sdk": "^2.814.0",
+    "eslint": "^9.9.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
     "serverless": "^3.39.0",
     "serverless-localstack": "^1.2.1",
-    "serverless-offline": "^14.0.0"
+    "serverless-offline": "^4.0.0",
+    "test-node": "^0.0.2",
+    "ts-jest": "^29.2.4",
+    "typescript": "^5.5.4",
+    "typescript-eslint-parser": "^22.0.0"
   }
 }

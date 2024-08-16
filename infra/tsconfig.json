@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+      "target": "es2018",
+      "module": "commonjs",
+      "outDir": "./dist",
+      "rootDir": "./scrapping-services",
+      // other compiler options...
+    },
+    "include": [
+      "scrapping-services/**/*.ts"
+    ],
+    "exclude": [
+      "node_modules",
+      "dist",
+      "scrapping-services/**/*.spec.ts"
+      
+    ]
+  }
