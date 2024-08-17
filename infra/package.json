@@ -5,13 +5,17 @@
   "main": "index.js",
   "scripts": {
     "test": "vitest",
-    "deploy": "tsc && serverless deploy"
+    "deploy": "tsc && serverless deploy",
+    "lambda-locally": "./scripts/run-lambda.sh"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "jsdom": "^24.1.1",
+    "axios": "^1.7.4",
+    "cheerio": "^1.0.0",
+    "dotenv": "^16.4.5",
+    "puppeteer": "^23.1.0",
     "serverless-deployment-bucket": "^1.6.0",
     "serverless-step-functions": "^3.21.0",
     "vitest": "^2.0.5"
@@ -27,6 +31,7 @@
     "serverless-offline": "^4.0.0",
     "test-node": "^0.0.2",
     "ts-jest": "^29.2.4",
+    "ts-node": "^10.9.2",
     "typescript": "^5.5.4",
     "typescript-eslint-parser": "^22.0.0"
   }

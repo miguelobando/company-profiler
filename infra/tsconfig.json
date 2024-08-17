@@ -3,16 +3,17 @@
       "target": "es2018",
       "module": "commonjs",
       "outDir": "./dist",
-      "rootDir": "./scrapping-services",
+      "rootDir": "./src",
       // other compiler options...
     },
     "include": [
-      "scrapping-services/**/*.ts"
+      "src/**/*.ts"
     ],
     "exclude": [
       "node_modules",
       "dist",
-      "scrapping-services/**/*.spec.ts"
+      "src/**/*.spec.ts",
+      "vitest.config.ts"
       
     ]
   }

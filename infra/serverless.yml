@@ -31,12 +31,12 @@ custom:
 
 
 functions:
-  lambdaOne:
-    handler: scrapping-services/lambdaTwo.handler
-    runtime: nodejs18.x
-  lambdaTwo:
-    handler: scrapping-services/lambdaOne.handler
-    runtime: nodejs18.x
+  # lambdaOne:
+  #   handler: src/lambdaTwo.handler
+  #   runtime: nodejs18.x
+  # lambdaTwo:
+  #   handler: src/lambdaOne.handler
+  #   runtime: nodejs18.x
   lambdaThree:
     handler: dist/lambdas/companyValues.handler
     runtime: nodejs18.x
