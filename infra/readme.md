@@ -17,6 +17,7 @@ It creates the following resources:
 3. Run the following command to deploy the infrastructure:
 
 ```
+npm i serverless -g
 serverless deploy
 ```
 

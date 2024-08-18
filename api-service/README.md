@@ -23,4 +23,4 @@ INFORMATION_GETTER_QUEUE_URL=< SQS Queue URL>
 
 ### GET /companies/getinformation
 
-This endpoint takes a URL and a user ID as parameters and returns the company information for the given URL or sends a message to a get information queue if the information is not found in the DynamoDB table.
+This endpoint takes a URL and a user ID as parameters and returns the company information for the given URL or sends a message to a get information queue if the information is not found in the DynamoDB table. All URL must be encoded using the `encodeURIComponent` function.

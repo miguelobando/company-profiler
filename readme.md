@@ -5,7 +5,7 @@ This project is a web scraping project that aims to scrape company values from a
 ## Services
 
 1. [API Service](api-service/readme.md)
-2. [Orchestrator Service](orchestrator-service/readme.md)
+2. [Orchestrator Service](orchestrator-service/README.md)
 3. [Company Values Service](company-values-service/readme.md)
 4. [Infrastructure](infra/readme.md)
 
