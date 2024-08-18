@@ -3,55 +3,75 @@ service: infra-project
 provider:
   name: aws
   region: us-east-1
-  stage: ${opt:stage,'local'}
+  logs:
+    lambda:
+      logFormat: JSON
+      logGroup: /aws/lambda/company-values
   stackName: company-profiler-infra
+  ecr:
+    images:
+      companyvaluesimage:
+        uri: 803042527733.dkr.ecr.us-east-1.amazonaws.com/company-values:latest
+  # ecr:
+  #   images:
+  #     companyvaluesimage:
+  #       uri: 000000000000.dkr.ecr.us-east-1.localhost.localstack.cloud:4566/company-values-image
+  # iam:
+  #   role:
+  #     statements:
+  #       - Effect: Allow
+  #         Action:
+  #           - sqs:*
+  #         Resource: "arn:aws:sqs:us-east-1:*:information-getter-queue"
+  #       - Effect: Allow
+  #         Action:
+  #           - dynamodb:*
+  #         Resource: "arn:aws:dynamodb:us-east-1:*:table/company-profiler-table"
   iam:
     role:
       statements:
         - Effect: Allow
           Action:
-            - sqs:*
-          Resource: 'arn:aws:sqs:us-east-1:*:information-getter-queue'
+            - lambda:InvokeFunction
+          Resource: "*"
+        - Effect: Allow
+          Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+          Resource: arn:aws:logs:*:*:*
         - Effect: Allow
           Action:
             - dynamodb:*
-          Resource: 'arn:aws:dynamodb:us-east-1:*:table/company-profiler-table'
-
+          Resource: "arn:aws:dynamodb:us-east-1:*:table/company-profiler-table"
 
 plugins:
-  - serverless-localstack
+  # - serverless-localstack
   - serverless-offline
 
-custom:
-  region: us-east-1
-  accountID: '000000000000'
-  localstack:
-    stages: [local]
-    host: http://127.0.0.1
-
+# custom:
+#   region: us-east-1
+#   accountID: "000000000000"
+#   localstack:
+#     stages: [local]
+#     host: http://127.0.0.1
 
 functions:
   # lambdaOne:
-  #   handler: src/lambdaTwo.handler
+  #   handler: src/lambdaOne.handler
   #   runtime: nodejs18.x
   # lambdaTwo:
   #   handler: src/lambdaOne.handler
   #   runtime: nodejs18.x
-  lambdaThree:
-    handler: dist/lambdas/companyValues.handler
-    runtime: nodejs18.x
-    events:
-      - http:
-          path: /company-values
-          method: get
-
-
+  companyValues:
+    image: companyvaluesimage
+    timeout: 300
 resources:
   Resources:
-    informationGetterQueue:
-      Type: AWS::SQS::Queue
-      Properties:
-        QueueName: information-getter-queue
+    #     informationGetterQueue:
+    #       Type: AWS::SQS::Queue
+    #       Properties:
+    #         QueueName: information-getter-queue
     companyProfilerTable:
       Type: AWS::DynamoDB::Table
       Properties:
@@ -63,46 +83,45 @@ resources:
           - AttributeName: id
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
-    stepFunctionsStateMachine:
-      Type: AWS::StepFunctions::StateMachine
-      Properties:
-        StateMachineName: scrapping-service-state-machine
-        RoleArn: !Sub '${stepFunctionsStateMachineRole.Arn}'
-        DefinitionString: !Sub |
-          {
-            "StartAt": "LambdaOne",
-            "States": {
-              "LambdaOne": {
-                "Type": "Task",
-                "Resource": "${LambdaOneLambdaFunction.Arn}",
-                "Next": "LambdaTwo"
-              },
-              "LambdaTwo": {
-                "Type": "Task",
-                "Resource": "${LambdaTwoLambdaFunction.Arn}",
-                "End": true
-              }
-            }
-          }
-    stepFunctionsStateMachineRole:
-      Type: AWS::IAM::Role
-      Properties:
-        AssumeRolePolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Principal:
-                Service: !Sub 'states.${AWS::Region}.amazonaws.com'
-                Action: 'sts:AssumeRole'
-        Policies:
-          - PolicyName: StatesExecutionPolicy
-            PolicyDocument:
-              Statement:
-                - Effect: Allow
-                  Action:
-                    - 'lambda:InvokeFunction'
-                  Resource:
-                    - !Sub '${LambdaOneLambdaFunction.Arn}'
-                    - !Sub '${LambdaTwoLambdaFunction.Arn}'
-
+#     stepFunctionsStateMachine:
+#       Type: AWS::StepFunctions::StateMachine
+#       Properties:
+#         StateMachineName: scrapping-service-state-machine
+#         RoleArn: !Sub '${stepFunctionsStateMachineRole.Arn}'
+#         DefinitionString: !Sub |
+#           {
+#             "StartAt": "LambdaOne",
+#             "States": {
+#               "LambdaOne": {
+#                 "Type": "Task",
+#                 "Resource": "${LambdaOneLambdaFunction.Arn}",
+#                 "Next": "LambdaTwo"
+#               },
+#               "LambdaTwo": {
+#                 "Type": "Task",
+#                 "Resource": "${LambdaTwoLambdaFunction.Arn}",
+#                 "End": true
+#               }
+#             }
+#           }
+#     stepFunctionsStateMachineRole:
+#       Type: AWS::IAM::Role
+#       Properties:
+#         AssumeRolePolicyDocument:
+#           Version: '2012-10-17'
+#           Statement:
+#             - Effect: Allow
+#               Principal:
+#                 Service: !Sub 'states.${AWS::Region}.amazonaws.com'
+#                 Action: 'sts:AssumeRole'
+#         Policies:
+#           - PolicyName: StatesExecutionPolicy
+#             PolicyDocument:
+#               Statement:
+#                 - Effect: Allow
+#                   Action:
+#                     - 'lambda:InvokeFunction'
+#                   Resource:
+#                     - !Sub '${LambdaOneLambdaFunction.Arn}'
+#                     - !Sub '${LambdaTwoLambdaFunction.Arn}'
 
