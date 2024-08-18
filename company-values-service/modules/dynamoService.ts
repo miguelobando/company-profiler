@@ -1,7 +1,7 @@
 import { DynamoDBClient, PutItemCommand } from "@aws-sdk/client-dynamodb";
 // set up the DynamoDB client with credentials
 const client = new DynamoDBClient({
-  region: "us-east-1",
+  region: process.env.AWS_REGION,
 });
 
 export const saveResult = async (id: string, data: string) => {
