@@ -83,11 +83,13 @@ export class SqsService implements OnModuleInit, OnModuleDestroy {
           const { userId, url } = this.transformBodyFromRequestInfoQueue(
             message.Body,
           );
-
-          this.httpService.post(`${this.scrapingEntryPoint}/company-values`, {
-            url: userId,
-            userId: url,
-          });
+          this.httpService.axiosRef.post(
+            `${this.scrapingEntryPoint}/company-values`,
+            {
+              url: url,
+              userId: userId,
+            },
+          );
 
           const deleteCommand = new DeleteMessageCommand({
             QueueUrl: this.informationGetterURL,
