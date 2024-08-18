@@ -26,14 +26,12 @@ describe('SqsService', () => {
               switch (key) {
                 case 'AWS_REGION':
                   return 'us-east-1';
-                case 'AWS_ACCESS_KEY_ID':
-                  return 'test-access-key';
+                case 'INFORMATION_GETTER_QUEUE_URL':
+                  return 'https://sqs.us-east-1.amazonaws.com/123456789/information-getter-queue';
                 case 'AWS_SECRET_ACCESS_KEY':
                   return 'test-secret-key';
                 case 'SQS_LOCALSTACK_URL':
-                  return 'http://localhost:4566/000000000000/information-getter-queue';
-                case 'SQS_REAL_URL':
-                  return 'https://sqs.us-east-1.amazonaws.com/123456789012/information-getter-queue';
+                  return 'https://sqs.us-east-1.amazonaws.com/1234567891/scraping-ready-queue';
                 default:
                   return null;
               }
@@ -79,9 +77,12 @@ describe('SqsService', () => {
       .mockImplementationOnce(() => Promise.resolve({ Messages: messages }))
       .mockImplementationOnce(() => Promise.resolve({}));
 
-    const pollQueueSpy = jest.spyOn<any, any>(service, 'pollQueue');
+    const pollQueueSpy = jest.spyOn<any, any>(
+      service,
+      'pollInformationGetterQueue',
+    );
 
-    await service['pollQueue']();
+    await service['pollInformationGetterQueue']();
 
     expect(pollQueueSpy).toHaveBeenCalled();
     expect(sqsClient.send).toHaveBeenCalledWith(
@@ -104,9 +105,12 @@ describe('SqsService', () => {
       return Promise.reject(error) as any;
     });
 
-    const pollQueueSpy = jest.spyOn<any, any>(service, 'pollQueue');
+    const pollQueueSpy = jest.spyOn<any, any>(
+      service,
+      'pollInformationGetterQueue',
+    );
 
-    await service['pollQueue']();
+    await service['pollInformationGetterQueue']();
 
     expect(pollQueueSpy).toHaveBeenCalled();
     expect(sqsClient.send).toHaveBeenCalledWith(
