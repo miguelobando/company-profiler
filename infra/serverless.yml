@@ -3,15 +3,7 @@ service: infra-project
 provider:
   name: aws
   region: us-east-1
-  logs:
-    lambda:
-      logFormat: JSON
-      logGroup: /aws/lambda/company-values
   stackName: company-profiler-infra
-  ecr:
-    images:
-      companyvaluesimage:
-        uri: 803042527733.dkr.ecr.us-east-1.amazonaws.com/company-values:latest
   # ecr:
   #   images:
   #     companyvaluesimage:
@@ -23,10 +15,7 @@ provider:
   #         Action:
   #           - sqs:*
   #         Resource: "arn:aws:sqs:us-east-1:*:information-getter-queue"
-  #       - Effect: Allow
-  #         Action:
-  #           - dynamodb:*
-  #         Resource: "arn:aws:dynamodb:us-east-1:*:table/company-profiler-table"
+
   iam:
     role:
       statements:
@@ -44,34 +33,36 @@ provider:
           Action:
             - dynamodb:*
           Resource: "arn:aws:dynamodb:us-east-1:*:table/company-profiler-table"
+        - Effect: Allow
+          Action:
+            - sqs:*
+          Resource:
+            - "arn:aws:sqs:us-east-1:*:information-getter-queue"
+            - "arn:aws:sqs:us-east-1:*:scraping-ready-queue"
 
 plugins:
-  # - serverless-localstack
   - serverless-offline
 
-# custom:
-#   region: us-east-1
-#   accountID: "000000000000"
-#   localstack:
-#     stages: [local]
-#     host: http://127.0.0.1
-
-functions:
-  # lambdaOne:
-  #   handler: src/lambdaOne.handler
-  #   runtime: nodejs18.x
-  # lambdaTwo:
-  #   handler: src/lambdaOne.handler
-  #   runtime: nodejs18.x
-  companyValues:
-    image: companyvaluesimage
-    timeout: 300
+# functions:
+# lambdaOne:
+#   handler: src/lambdaOne.handler
+#   runtime: nodejs18.x
+# lambdaTwo:
+#   handler: src/lambdaOne.handler
+#   runtime: nodejs18.x
+# companyValues:
+# image: companyvaluesimage
+# timeout: 300
 resources:
   Resources:
-    #     informationGetterQueue:
-    #       Type: AWS::SQS::Queue
-    #       Properties:
-    #         QueueName: information-getter-queue
+    scrapingReadyQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: scraping-ready-queue
+    informationGetterQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: information-getter-queue
     companyProfilerTable:
       Type: AWS::DynamoDB::Table
       Properties:
