@@ -4,18 +4,6 @@ provider:
   name: aws
   region: us-east-1
   stackName: company-profiler-infra
-  # ecr:
-  #   images:
-  #     companyvaluesimage:
-  #       uri: 000000000000.dkr.ecr.us-east-1.localhost.localstack.cloud:4566/company-values-image
-  # iam:
-  #   role:
-  #     statements:
-  #       - Effect: Allow
-  #         Action:
-  #           - sqs:*
-  #         Resource: "arn:aws:sqs:us-east-1:*:information-getter-queue"
-
   iam:
     role:
       statements:
