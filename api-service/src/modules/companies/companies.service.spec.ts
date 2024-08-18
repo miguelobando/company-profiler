@@ -36,6 +36,7 @@ describe('CompaniesService', () => {
 
   it('should call sendMessage with the correct URL and return true', async () => {
     const url = 'https://example.com';
+    const userId = 'test-user';
     const sendMessageSpy = jest
       .spyOn(sqsService, 'sendMessage')
       .mockResolvedValue(undefined);
@@ -44,23 +45,24 @@ describe('CompaniesService', () => {
       return;
     });
 
-    const result = await service.getJobInformation(url);
+    const result = await service.getJobInformation(url, userId);
 
-    expect(sendMessageSpy).toHaveBeenCalledWith({ url });
+    expect(sendMessageSpy).toHaveBeenCalledWith({ url, userId });
     expect(result).toBe(true);
   });
 
   it('should throw an InternalServerErrorException if sendMessage fails', async () => {
     const url = 'https://example.com';
+    const userId = 'test-user';
     const errorMessage = 'AWS error';
     jest
       .spyOn(sqsService, 'sendMessage')
       .mockRejectedValue(new Error(errorMessage));
 
-    await expect(service.getJobInformation(url)).rejects.toThrow(
+    await expect(service.getJobInformation(url, userId)).rejects.toThrow(
       InternalServerErrorException,
     );
-    await expect(service.getJobInformation(url)).rejects.toEqual(
+    await expect(service.getJobInformation(url, userId)).rejects.toEqual(
       new InternalServerErrorException({
         message: 'Internal Server Error',
         error: errorMessage,

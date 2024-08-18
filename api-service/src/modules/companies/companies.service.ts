@@ -10,9 +10,9 @@ export class CompaniesService {
     private readonly logService: LogService,
   ) {}
 
-  async getJobInformation(url: string) {
+  async getJobInformation(url: string, userId: string) {
     try {
-      await this.sqsService.sendMessage({ url });
+      await this.sqsService.sendMessage({ url, userId });
       this.logService.logMessage(
         this.SERVICE_NAME,
         `Message sent to SQS with URL: ${url}`,

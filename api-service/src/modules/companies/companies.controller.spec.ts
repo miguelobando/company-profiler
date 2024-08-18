@@ -3,6 +3,7 @@ import { CompaniesController } from './companies.controller';
 import { CompaniesService } from './companies.service';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
+import { DynamoDBService } from '../../services/dynamodb.service';
 
 describe('CompaniesController', () => {
   let app: INestApplication;
@@ -21,6 +22,12 @@ describe('CompaniesController', () => {
           provide: CompaniesService,
           useValue: companyServiceMock,
         },
+        {
+          provide: DynamoDBService,
+          useValue: {
+            getItem: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
@@ -38,19 +45,22 @@ describe('CompaniesController', () => {
     await app.close();
   });
 
-  it('should execute findCompanyInformation when POST /companies/getinformation is called', async () => {
+  it('should execute findCompanyInformation when GET /companies/getinformation is called', async () => {
     const findCompanyInformationSpy = jest.spyOn(
       companyServiceMock,
       'getJobInformation',
     );
 
-    const respose = await request(app.getHttpServer()).get(
-      '/companies/getinformation?url=' + encodedURL,
+    const userId = 'testUserId';
+    const encodedURL = encodeURIComponent(URL);
+
+    const response = await request(app.getHttpServer()).get(
+      `/companies/getinformation?url=${encodedURL}&userId=${userId}`, // Add userId to the query
     );
 
-    expect(respose.status).toBe(200);
-    expect(respose.body).toEqual({ success: true });
-    expect(findCompanyInformationSpy).toHaveBeenCalledWith(URL);
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({ success: true });
+    expect(findCompanyInformationSpy).toHaveBeenCalledWith(URL, userId);
   });
 
   it('should return 400 when  GET /companies/getinformation is called with invalid url', async () => {
