@@ -13,20 +13,13 @@ export class SqsService {
     private configService: ConfigService,
     private readonly logService: LogService,
   ) {
-    const isDevelopment =
-      this.configService.get<string>('NODE_ENV') === 'development';
-    const endpoint = isDevelopment
-      ? this.configService.get<string>('SQS_LOCALSTACK_URL')
-      : undefined;
-
     this.sqsClient = new SQSClient({
       region: this.configService.get<string>('AWS_REGION'),
-      endpoint,
     });
 
-    this.queueUrl = isDevelopment
-      ? `${this.configService.get<string>('SQS_LOCALSTACK_URL')}`
-      : this.configService.get<string>('SQS_REAL_URL');
+    this.queueUrl = this.configService.get<string>(
+      'INFORMATION_GETTER_QUEUE_URL',
+    );
   }
 
   async sendMessage(message: SendUrlToScrapeDto): Promise<void> {

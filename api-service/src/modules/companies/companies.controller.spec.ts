@@ -4,6 +4,7 @@ import { CompaniesService } from './companies.service';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { DynamoDBService } from '../../services/dynamodb.service';
+import { ConfigService } from '@nestjs/config';
 
 describe('CompaniesController', () => {
   let app: INestApplication;
@@ -26,6 +27,19 @@ describe('CompaniesController', () => {
           provide: DynamoDBService,
           useValue: {
             getItem: jest.fn(),
+          },
+        },
+        {
+          provide: ConfigService,
+          useValue: {
+            get: jest.fn((key: string) => {
+              switch (key) {
+                case 'AWS_REGION':
+                  return 'us-east-1';
+                default:
+                  return null;
+              }
+            }),
           },
         },
       ],
