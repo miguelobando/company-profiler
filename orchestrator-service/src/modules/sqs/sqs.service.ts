@@ -8,6 +8,7 @@ import { ConfigService } from '@nestjs/config';
 import { LogService } from '../../services/log.service';
 import { SNSClient, PublishCommand } from '@aws-sdk/client-sns';
 import { HttpService } from '@nestjs/axios';
+import { MessageInterface } from './message.interface';
 
 @Injectable()
 export class SqsService implements OnModuleInit, OnModuleDestroy {
@@ -44,9 +45,8 @@ export class SqsService implements OnModuleInit, OnModuleDestroy {
     this.scrapingReadyTopic = this.configService.get<string>(
       'SCRAPING_READY_TOPIC_ARN',
     );
-    this.scrapingEntryPoint = this.configService.get<string>(
-      'SCRAPING_READY_ENTRYPOINT',
-    );
+    this.scrapingEntryPoint =
+      this.configService.get<string>('SCRAPER_ENDPOINT');
   }
 
   onModuleInit() {
@@ -80,9 +80,11 @@ export class SqsService implements OnModuleInit, OnModuleDestroy {
             `Received message: ${message.Body}`,
           );
 
-          const [userId, url] = message.Body.split('|');
+          const { userId, url } = this.transformBodyFromRequestInfoQueue(
+            message.Body,
+          );
 
-          this.httpService.post(this.scrapingEntryPoint, {
+          this.httpService.post(`${this.scrapingEntryPoint}/company-values`, {
             url: userId,
             userId: url,
           });
@@ -136,5 +138,11 @@ export class SqsService implements OnModuleInit, OnModuleDestroy {
       this.logService.logError(this.MODULE_NAME, error.message);
       console.error('Error polling SQS queue:', error);
     }
+  }
+
+  private transformBodyFromRequestInfoQueue(body: string) {
+    const newbody = JSON.parse(body) as unknown as MessageInterface;
+    const { userId, url } = newbody;
+    return { userId, url };
   }
 }
