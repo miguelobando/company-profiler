@@ -39,20 +39,14 @@ provider:
           Resource:
             - "arn:aws:sqs:us-east-1:*:information-getter-queue"
             - "arn:aws:sqs:us-east-1:*:scraping-ready-queue"
+        - Effect: Allow
+          Action:
+            - sns:*
+          Resource: "arn:aws:sns:us-east-1:*:scraping-ready-topic"
 
 plugins:
   - serverless-offline
 
-# functions:
-# lambdaOne:
-#   handler: src/lambdaOne.handler
-#   runtime: nodejs18.x
-# lambdaTwo:
-#   handler: src/lambdaOne.handler
-#   runtime: nodejs18.x
-# companyValues:
-# image: companyvaluesimage
-# timeout: 300
 resources:
   Resources:
     scrapingReadyQueue:
@@ -74,45 +68,7 @@ resources:
           - AttributeName: id
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
-#     stepFunctionsStateMachine:
-#       Type: AWS::StepFunctions::StateMachine
-#       Properties:
-#         StateMachineName: scrapping-service-state-machine
-#         RoleArn: !Sub '${stepFunctionsStateMachineRole.Arn}'
-#         DefinitionString: !Sub |
-#           {
-#             "StartAt": "LambdaOne",
-#             "States": {
-#               "LambdaOne": {
-#                 "Type": "Task",
-#                 "Resource": "${LambdaOneLambdaFunction.Arn}",
-#                 "Next": "LambdaTwo"
-#               },
-#               "LambdaTwo": {
-#                 "Type": "Task",
-#                 "Resource": "${LambdaTwoLambdaFunction.Arn}",
-#                 "End": true
-#               }
-#             }
-#           }
-#     stepFunctionsStateMachineRole:
-#       Type: AWS::IAM::Role
-#       Properties:
-#         AssumeRolePolicyDocument:
-#           Version: '2012-10-17'
-#           Statement:
-#             - Effect: Allow
-#               Principal:
-#                 Service: !Sub 'states.${AWS::Region}.amazonaws.com'
-#                 Action: 'sts:AssumeRole'
-#         Policies:
-#           - PolicyName: StatesExecutionPolicy
-#             PolicyDocument:
-#               Statement:
-#                 - Effect: Allow
-#                   Action:
-#                     - 'lambda:InvokeFunction'
-#                   Resource:
-#                     - !Sub '${LambdaOneLambdaFunction.Arn}'
-#                     - !Sub '${LambdaTwoLambdaFunction.Arn}'
-
+    scrapingReadyTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: scraping-ready-topic
