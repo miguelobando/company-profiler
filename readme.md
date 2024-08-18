@@ -29,3 +29,7 @@ This project is a web scraping project that aims to scrape company values from a
 2. AWS CLI
 3. You must have an AWS account and have the necessary permissions to create resources in the AWS account and also set up the AWS CLI with the appropriate credentials.
 4. You must have a LinkedIn account and have the necessary permissions to access the Linkedin API.
+
+## Architecture
+
+![Architecture Diagram](architecture.jpg)
